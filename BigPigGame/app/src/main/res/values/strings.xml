@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Big Pig Game - Nicholas Glesmann - Lab 2</string>
+    <string name="player1NameLabel">Player 1</string>
+    <string name="player2NameLabel">Player 2</string>
+    <string name="player1ScoreLabel">Score</string>
+    <string name="player2ScoreLabel">Score</string>
+    <string name="player1NameEditText"></string>
+    <string name="player2NameEditText"></string>
+    <string name="player1ScoreTextView">0</string>
+    <string name="player2ScoreTextView">0</string>
+    <string name="playerTurnLabel"></string>
+    <string name="pointsForTurnLabel">Points For This Turn</string>
+    <string name="pointsForTurnTextView">0</string>
+    <string name="rollDieButtonText">Roll Die</string>
+    <string name="endTurnButtonText">End Turn</string>
+    <string name="newGameButtonText">New Game</string>
+</resources>
