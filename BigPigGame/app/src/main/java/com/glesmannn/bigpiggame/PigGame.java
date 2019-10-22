@@ -15,7 +15,7 @@ public class PigGame {
 	private int turn;
 	private int currentRoll;
 	private boolean gameStarted;
-	
+
 	public PigGame()
 	{
 		player1Score = 0;
