@@ -12,10 +12,23 @@
         android:layout_height="85dp"
         app:layout_constraintBottom_toTopOf="@+id/pointsForTurnLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintHorizontal_bias="0.322"
+        app:layout_constraintStart_toEndOf="@+id/dieImage2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.856"
+        app:layout_goneMarginLeft="172dp"
+        app:srcCompat="@drawable/die8side8" />
+
+    <ImageView
+        android:id="@+id/dieImage2"
+        android:layout_width="105dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="208dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/pointsForTurnLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.939"
+        app:layout_constraintVertical_bias="0.856"
         app:srcCompat="@drawable/die8side8" />
 
     <TextView
@@ -210,5 +223,13 @@
         app:layout_constraintGuide_percent=".5"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="dieImage2"
+        tools:layout_editor_absoluteX="731dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

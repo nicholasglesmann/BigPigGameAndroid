@@ -3,71 +3,100 @@ package com.glesmannn.bigpiggame;
 import java.util.Random;
 
 public class PigGame {
-	
-	final private int WINNING_SCORE = 100;
-	
-	private Random rand = new Random();
+    // player variables
 	private int player1Score;
 	private int player2Score;
-	private int turnPoints;
 	private String player1Name = "";
 	private String player2Name = "";
-	private int turn;
-	private int currentRoll;
-	private boolean gameStarted;
 
-	public PigGame()
-	{
-		player1Score = 0;
-		player2Score = 0;
-		turnPoints = 0;
-		turn = 1; // player 1 goes first
-	}
+	// current turn variables
+	private int turn;
+    private int turnPoints;
+    private int[] currentRolls;
+	private boolean gameStarted;
+	private boolean gameOverNextTurn;
+    private boolean playerDead;
+
+    // preference variables
+	private int numDie;
+	private int scoreToWin;
+	private int endTurnNumber;
+
+    // random number generator
+    private Random rand = new Random();
 	
-	public PigGame(int p1Score, int p2Score, int tPoints, int t, int r, boolean gameStart)
+	public PigGame(int player1Score, int player2Score, int turnPoints, int turn, int[] currentRolls, boolean gameStarted, boolean gameOverNextTurn)
 	{
-		player1Score = p1Score;
-		player2Score = p2Score;
-		turnPoints = tPoints;
-		turn = t;
-		currentRoll = r;
-		gameStarted = gameStart;
+		this.player1Score = player1Score;
+		this.player2Score = player2Score;
+		this.turnPoints = turnPoints;
+		this.turn = turn;
+		this.currentRolls = currentRolls;
+		this.gameStarted = gameStarted;
+		this.gameOverNextTurn = gameOverNextTurn;
 	}
-	
+
+	// Getters and Setters for Player variables
 	public void setPlayer1Name(String n)
 	{
 		player1Name = n;
 	}
-	
 	public String getPlayer1Name()
 	{
 		return player1Name;
 	}
-	
 	public void setPlayer2Name(String n)
 	{
 		player2Name = n;
 	}
-	
 	public String getPlayer2Name()
 	{
 		return player2Name;
 	}
-	
-	public int getTurn() {
-		return turn;
-	}
-	
 	public int getPlayer1Score()
-	{
-		return player1Score;
+    {
+        return player1Score;
+    }
+    public int getPlayer2Score()
+    {
+        return player2Score;
+    }
+
+    // Getters and Setters for Preferences
+    public int getNumDie() { return numDie; }
+    public void setNumDie(int numDie)
+    {
+	    this.numDie = numDie;
+	    if(numDie == 1) {
+	        currentRolls[1] = 0;
+        }
 	}
 
-	
-	public int getPlayer2Score()
-	{
-		return player2Score;
-	}
+    public int getScoreToWin() { return scoreToWin; }
+    public void setScoreToWin(int scoreToWin) { this.scoreToWin = scoreToWin; }
+    public int getEndTurnNumber() { return endTurnNumber; }
+    public void setEndTurnNumber(int endTurnNumber) { this.endTurnNumber = endTurnNumber; }
+
+    // Getters and Setters for Current Turn variables
+    public boolean getGameStarted() { return gameStarted; }
+    public boolean getGameOverNextTurn() { return gameOverNextTurn; }
+    public void setGameOverNextTurn(boolean gameOverNextTurn) { this.gameOverNextTurn = gameOverNextTurn; }
+    public int getTurn() { return turn; }
+    public int getTurnPoints() { return turnPoints; }
+    public int[] getCurrentRolls() { return currentRolls; }
+    public boolean getPlayerDead() { return playerDead; }
+    public void setPlayerDead(boolean playerDead) { this.playerDead = playerDead; }
+
+
+
+
+
+
+
+    public void togglePlayerDead() { playerDead = !playerDead; }
+
+
+
 	
 	public void resetGame()
 	{
@@ -77,26 +106,35 @@ public class PigGame {
 		turn = 1;
 	}
 
-	public int rollDie()
+	public int[] rollDice()
 	{
-		int roll = rand.nextInt(8) + 1;
-		
-		if(roll != 8)
-		{
-			turnPoints += roll;
-		}
-		else
-		{
-			turnPoints = 0;
-		}
-		
-		return roll;
+	    // create new array to store each die roll
+	    currentRolls = new int[numDie];
+
+	    // roll each die
+	    for(int i = 0; i < numDie; i++) {
+            int roll = rand.nextInt(8) + 1;
+
+            // add the score to turn points
+            turnPoints += roll;
+
+            // add the die roll to the rolls array
+            currentRolls[i] = roll;
+        }
+
+	    // after all die have been rolled, loop through the array looking for a roll matching
+        // the endTurnNumber. If found, player should lose all points for the turn
+	    for(int i = 0; i < currentRolls.length; i++) {
+	        if(currentRolls[i] == endTurnNumber) {
+                turnPoints = 0;
+                togglePlayerDead();
+                break;
+            }
+        }
+		return currentRolls;
 	}
 	
-	public int getTurnPoints()
-	{
-		return turnPoints;
-	}
+
 
 	public String getCurrentPlayer()
 	{
@@ -106,9 +144,7 @@ public class PigGame {
 			return player2Name;
 	}
 
-	public int getCurrentRoll() {
-		return currentRoll;
-	}
+
 	
 	public int changeTurn()
 	{
@@ -118,6 +154,7 @@ public class PigGame {
 			player2Score += turnPoints;
 		
 		turnPoints = 0;
+		setPlayerDead(false);
 		
 		turn++;
 		return turn;
@@ -131,14 +168,12 @@ public class PigGame {
 		gameStarted = false;
 	}
 
-	public boolean getGameStarted() {
-		return gameStarted;
-	}
+
 	
 	public String checkForWinner()
 	{
        String winnerMessage = "";
-        if (player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE) {
+        if (player1Score >= scoreToWin || player2Score >= scoreToWin) {
             if (player2Score > player1Score) {
                 winnerMessage = String.format("%s wins!", player2Name);
             }

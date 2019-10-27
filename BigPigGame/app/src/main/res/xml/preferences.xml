@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="num_die"
+        android:title="@string/numDie_title"
+        android:summary="@string/numDie_summary"
+        android:dialogTitle="@string/numDie_title"
+        android:entries="@array/numDie_keys"
+        android:entryValues="@array/numDie_values"
+        android:defaultValue="@string/numDie_default" />
+    <EditTextPreference
+        android:key="score_to_win"
+        android:title="@string/scoreToWin_title"
+        android:summary="@string/scoreToWin_summary"
+        android:inputType="number"
+        android:defaultValue="@string/scoreToWin_default" />
+    <EditTextPreference
+        android:key="end_turn_number"
+        android:title="@string/endTurnNumber_title"
+        android:summary="@string/endTurnNumber_summary"
+        android:inputType="number"
+        android:defaultValue="@string/endTurnNumber_default" />
+</PreferenceScreen>
