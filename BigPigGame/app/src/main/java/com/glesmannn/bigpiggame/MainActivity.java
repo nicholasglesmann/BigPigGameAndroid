@@ -366,8 +366,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                 return true;
             default:
-                return
-        super.onOptionsItemSelected((item));
+                return super.onOptionsItemSelected((item));
         }
     }
 }
