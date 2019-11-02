@@ -1,31 +1,37 @@
 package com.glesmannn.bigpiggame;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import android.app.Fragment;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class SecondFragment extends Fragment implements View.OnClickListener {
+
 
     // Game Logic
     PigGame game;
     int[] currentRolls = new int[] {0,0};
 
     // UI Widgets
-    EditText player1NameEditText;
-    EditText player2NameEditText;
+    TextView player1NameLabel;
+    TextView player2NameLabel;
     TextView player1ScoreTextView;
     TextView player2ScoreTextView;
     TextView playerTurnLabel;
@@ -54,24 +60,28 @@ public class MainActivity extends AppCompatActivity {
     int scoreToWin;
     int endTurnNumber;
 
-    public void setPlayerNames() {
-        game.setPlayer1Name(player1NameEditText.getText().toString());
-        game.setPlayer2Name(player2NameEditText.getText().toString());
+    // This method is only called from the second activity
+    public void setPlayerNames(String player1Name, String player2Name) {
+        game.setPlayer1Name(player1Name);
+        game.setPlayer2Name(player2Name);
     }
 
     public void rollDieClickEvent(View v) {
+        Toast.makeText(getActivity(), "Roll Die", Toast.LENGTH_SHORT).show();
+
         currentRolls = game.rollDice();
 
         if(game.getPlayerDead()) {
             rollDieButton.setEnabled(false);
         }
 
-        setPlayerNames();
         displayImage();
         displayPointsForTurn();
     }
 
     public void endTurnClickEvent(View v) {
+        Toast.makeText(getActivity(), "END TURN", Toast.LENGTH_SHORT).show();
+
         // enable the roll die button
         rollDieButton.setEnabled(true);
 
@@ -107,15 +117,13 @@ public class MainActivity extends AppCompatActivity {
         displayImage();
     }
 
-    public void newGameClickEvent(View v) {
+    /*
+    public void newGame() {
         rollDieButton.setEnabled(true);
         endTurnButton.setEnabled(true);
-        player1NameEditText.setEnabled(false);
-        player2NameEditText.setEnabled(false);
         game.resetGame();
         game.startGame();
         pointsForTurnLabel.setText("Points For This Turn");
-        setPlayerNames();
         displayPlayerTurn();
         displayPlayerPoints();
         displayPointsForTurn();
@@ -129,11 +137,11 @@ public class MainActivity extends AppCompatActivity {
         displayImage();
     }
 
+     */
+
     public void gameOver() {
         rollDieButton.setEnabled(false);
         endTurnButton.setEnabled(false);
-        player1NameEditText.setEnabled(true);
-        player2NameEditText.setEnabled(true);
         String winner;
         if(game.getPlayer1Score() > game.getPlayer2Score()) {
             if(game.getPlayer1Name().length() > 0)
@@ -165,18 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayPlayerTurn() {
         String currentPlayer = game.getCurrentPlayer();
-        if(game.getGameStarted()) {
-            playerTurnLabel.setVisibility(TextView.VISIBLE);
-            if(currentPlayer.length() > 0) {
-                playerTurnLabel.setText(currentPlayer + "'s turn");
-            } else if (game.getTurn() % 2 == 1){
-                playerTurnLabel.setText("Player 1's turn");
-            } else {
-                playerTurnLabel.setText("Player 2's turn");
-            }
-        } else {
-            playerTurnLabel.setVisibility(TextView.GONE);
-        }
+        playerTurnLabel.setText(currentPlayer + "'s turn");
     }
 
     private void displayPointsForTurn() {
@@ -200,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 dieImage2.setVisibility(ImageView.VISIBLE);
                 break;
         }
+
         int id = 0;
         for(int i = 0; i < currentRolls.length; i++) {
             switch(currentRolls[i]){
@@ -235,39 +233,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
-
-        // UI Widget References
-        dieImage = findViewById(R.id.dieImage);
-        dieImage2 = findViewById(R.id.dieImage2);
-        player1NameEditText = findViewById(R.id.player1NameEditText);
-        player2NameEditText = findViewById(R.id.player2NameEditText);
-        player1ScoreTextView = findViewById(R.id.player1ScoreTextView);
-        player2ScoreTextView = findViewById(R.id.player2ScoreTextView);
-        playerTurnLabel = findViewById(R.id.playerTurnLabel);
-        pointsForTurnTextView = findViewById(R.id.pointsForTurnTextView);
-        pointsForTurnLabel = findViewById(R.id.pointsForTurnLabel);
-        rollDieButton = findViewById(R.id.rollDieButton);
-        endTurnButton = findViewById(R.id.endTurnButton);
-        newGameButton = findViewById(R.id.newGameButton2);
-
-        // Instantiate all arrays
-        diceImages = new ImageView[]{dieImage,dieImage2};
 
         // Initial Values
         int player1Score = 0, player2Score = 0, turnPoints = 0, turn = 1;
         boolean gameStarted = false, playerDead = false, gameOverNextTurn = false;
 
-        if(savedInstanceState == null) {
-            // Disable these buttons if there isn't a game currently in progress
-            rollDieButton.setEnabled(false);
-            endTurnButton.setEnabled(false);
-        } else if(savedInstanceState != null) {
+        if(savedInstanceState != null) {
             // Recall Instance State Variables if a game is in progress
             player1Score = savedInstanceState.getInt(PLAYER1_SCORE);
             player2Score = savedInstanceState.getInt(PLAYER2_SCORE);
@@ -281,24 +255,45 @@ public class MainActivity extends AppCompatActivity {
 
         // Set preferences to the default values defined in preferences.xml
         // readAgain is false so the values will only be set once
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, false);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         // Create game logic with instance variables (or initial values if no game in progress)
         game = new PigGame(player1Score, player2Score, turnPoints, turn, currentRolls, gameStarted, gameOverNextTurn);
         game.setPlayerDead(playerDead);
 
-        if(!game.getGameStarted()) {
-            rollDieButton.setEnabled(false);
-            endTurnButton.setEnabled(false);
-        } else {
-            player1NameEditText.setEnabled(false);
-            player2NameEditText.setEnabled(false);
-        }
     }
 
     @Override
-    protected void onResume() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // inflate the fragment layout
+        View view = inflater.inflate(R.layout.second_fragment, container, false);
+
+        // UI Widget References
+        dieImage = view.findViewById(R.id.dieImage);
+        dieImage2 = view.findViewById(R.id.dieImage2);
+        player1NameLabel = view.findViewById(R.id.player1NameLabel);
+        player2NameLabel = view.findViewById(R.id.player2NameLabel);
+        player1ScoreTextView = view.findViewById(R.id.player1ScoreTextView);
+        player2ScoreTextView = view.findViewById(R.id.player2ScoreTextView);
+        playerTurnLabel = view.findViewById(R.id.playerTurnLabel);
+        pointsForTurnTextView = view.findViewById(R.id.pointsForTurnTextView);
+        pointsForTurnLabel = view.findViewById(R.id.pointsForTurnLabel);
+        rollDieButton = view.findViewById(R.id.rollDieButton);
+        endTurnButton = view.findViewById(R.id.endTurnButton);
+        newGameButton = view.findViewById(R.id.newGameButton2);
+
+        // Instantiate all arrays
+        diceImages = new ImageView[]{dieImage,dieImage2};
+
+        rollDieButton.setOnClickListener(this);
+        endTurnButton.setOnClickListener(this);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
 
         // get updated preferences
@@ -309,34 +304,37 @@ public class MainActivity extends AppCompatActivity {
         // make breakfast
         String toastText;
         toastText = "NumDie = " + numDie;
-        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         toastText = "ScoreToWin = " + scoreToWin;
-        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         toastText = "endTurnNumber = " + endTurnNumber;
-        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         // update preferences in the game
         game.setNumDie(numDie);
         game.setScoreToWin(scoreToWin);
         game.setEndTurnNumber(endTurnNumber);
 
+        player1NameLabel.setText(game.getPlayer1Name());
+        player2NameLabel.setText(game.getPlayer2Name());
+
         // display stuff
         displayImage();
-        setPlayerNames();
         displayPlayerTurn();
         displayPointsForTurn();
         displayPlayerPoints();
+
 
         // disable the roll die button if the player is dead but hasn't ended turn
         if(game.getPlayerDead()) {
             rollDieButton.setEnabled(false);
         }
+
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         // Toast t = Toast.makeText(this, String.format(Locale.US, "%d", game.getTurnPoints()), Toast.LENGTH_LONG);
         // t.show();
         outState.putInt(PLAYER1_SCORE, game.getPlayer1Score());
@@ -351,22 +349,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.big_pig_game, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.big_pig_game, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             case R.id.menu_about:
-                Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected((item));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.rollDieButton) {
+            rollDieClickEvent(v);
+        } else if (v.getId() == R.id.endTurnButton) {
+            endTurnClickEvent(v);
         }
     }
 }

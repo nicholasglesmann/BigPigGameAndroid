@@ -39,7 +39,11 @@ public class PigGame {
 	// Getters and Setters for Player variables
 	public void setPlayer1Name(String n)
 	{
-		player1Name = n;
+		if(n.isEmpty()) {
+			player1Name = "Player 1";
+		} else {
+			player1Name = n;
+		}
 	}
 	public String getPlayer1Name()
 	{
@@ -47,7 +51,11 @@ public class PigGame {
 	}
 	public void setPlayer2Name(String n)
 	{
-		player2Name = n;
+		if (n.isEmpty()) {
+			player2Name = "Player 2";
+		} else {
+			player2Name = n;
+		}
 	}
 	public String getPlayer2Name()
 	{
