@@ -21,6 +21,10 @@ public class FirstActivity extends AppCompatActivity {
         setContentView(R.layout.first_activity);
     }
 
+    public void setPlayerNamesFromFirstActivity(String player1Name, String player2Name) {
+        SecondFragment secondFragment = (SecondFragment)getFragmentManager().findFragmentById(R.id.second_fragment);
+        secondFragment.setPlayerNamesFromFirstActivity(player1Name, player2Name);
+    }
 
 
 }

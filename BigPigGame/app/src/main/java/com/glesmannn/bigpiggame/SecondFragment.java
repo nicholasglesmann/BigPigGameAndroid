@@ -66,6 +66,14 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         game.setPlayer2Name(player2Name);
     }
 
+    // This method is only called from the first activity. I realize that it is redundant to do it this way
+    // but it helps me understand how the data is being passed around
+    public void setPlayerNamesFromFirstActivity(String player1Name, String player2Name) {
+        this.setPlayerNames(player1Name, player2Name);
+        displayPlayerNames();
+        displayPlayerTurn();
+    }
+
     public void rollDieClickEvent(View v) {
         Toast.makeText(getActivity(), "Roll Die", Toast.LENGTH_SHORT).show();
 
@@ -171,9 +179,16 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         displayImage();
     }
 
+    private void displayPlayerNames() {
+        player1NameLabel.setText(game.getPlayer1Name());
+        player2NameLabel.setText(game.getPlayer2Name());
+    }
+
     private void displayPlayerTurn() {
         String currentPlayer = game.getCurrentPlayer();
-        playerTurnLabel.setText(currentPlayer + "'s turn");
+        if(!currentPlayer.isEmpty()) {
+            playerTurnLabel.setText(currentPlayer + "'s turn");
+        }
     }
 
     private void displayPointsForTurn() {
@@ -240,6 +255,7 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         // Initial Values
         int player1Score = 0, player2Score = 0, turnPoints = 0, turn = 1;
         boolean gameStarted = false, playerDead = false, gameOverNextTurn = false;
+        String player1Name = "", player2Name = "";
 
         if(savedInstanceState != null) {
             // Recall Instance State Variables if a game is in progress
@@ -251,6 +267,8 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
             gameStarted = savedInstanceState.getBoolean(GAME_STARTED);
             playerDead = savedInstanceState.getBoolean(PLAYER_DEAD);
             gameOverNextTurn = savedInstanceState.getBoolean(GAME_OVER_NEXT_TURN);
+            player1Name = savedInstanceState.getString("player1name");
+            player2Name = savedInstanceState.getString("player2name");
         }
 
         // Set preferences to the default values defined in preferences.xml
@@ -262,6 +280,8 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         game = new PigGame(player1Score, player2Score, turnPoints, turn, currentRolls, gameStarted, gameOverNextTurn);
         game.setPlayerDead(playerDead);
 
+        game.setPlayer1Name(player1Name);
+        game.setPlayer2Name(player2Name);
     }
 
     @Override
@@ -345,6 +365,8 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         outState.putBoolean(GAME_STARTED, game.getGameStarted());
         outState.putBoolean(PLAYER_DEAD, game.getPlayerDead());
         outState.putBoolean(GAME_OVER_NEXT_TURN, game.getGameOverNextTurn());
+        outState.putString("player1name", game.getPlayer1Name());
+        outState.putString("player2name", game.getPlayer2Name());
         super.onSaveInstanceState(outState);
     }
 

@@ -54,13 +54,12 @@ public class FirstFragment extends Fragment implements OnClickListener {
     public void onClick(View v) {
         String player1Name = player1EditText.getText().toString();
         String player2Name = player2EditText.getText().toString();
-        Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT).show();
 
         if (v.getId() == R.id.newGameButton2) {
             if (twoPaneLayout) {
-                Toast.makeText(getActivity(), "wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "here", Toast.LENGTH_SHORT).show();
+                activity.setPlayerNamesFromFirstActivity(player1Name, player2Name);
             } else {
-                Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), SecondActivity.class);
                 intent.putExtra(PLAYER_1_NAME, player1Name);
                 intent.putExtra(PLAYER_2_NAME, player2Name);

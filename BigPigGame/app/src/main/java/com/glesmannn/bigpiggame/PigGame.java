@@ -75,9 +75,9 @@ public class PigGame {
     public void setNumDie(int numDie)
     {
 	    this.numDie = numDie;
-	    if(numDie == 1) {
-	        currentRolls[1] = 0;
-        }
+		for(int i = 1; i < numDie; i++) {
+			currentRolls[i] = 0;
+		}
 	}
 
     public int getScoreToWin() { return scoreToWin; }
