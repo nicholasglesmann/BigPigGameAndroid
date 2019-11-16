@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 
 public class FirstFragment extends Fragment implements OnClickListener {
@@ -45,9 +44,6 @@ public class FirstFragment extends Fragment implements OnClickListener {
 
         twoPaneLayout = activity.findViewById(R.id.second_fragment) != null;
 
-        Toast.makeText(getActivity(), String.valueOf(twoPaneLayout), Toast.LENGTH_SHORT).show();
-
-
     }
 
     @Override
@@ -57,7 +53,6 @@ public class FirstFragment extends Fragment implements OnClickListener {
 
         if (v.getId() == R.id.newGameButton2) {
             if (twoPaneLayout) {
-                Toast.makeText(getActivity(), "here", Toast.LENGTH_SHORT).show();
                 activity.setPlayerNamesFromFirstActivity(player1Name, player2Name);
             } else {
                 Intent intent = new Intent(getActivity(), SecondActivity.class);

@@ -75,7 +75,6 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
     }
 
     public void rollDieClickEvent(View v) {
-        Toast.makeText(getActivity(), "Roll Die", Toast.LENGTH_SHORT).show();
 
         currentRolls = game.rollDice();
 
@@ -88,7 +87,6 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
     }
 
     public void endTurnClickEvent(View v) {
-        Toast.makeText(getActivity(), "END TURN", Toast.LENGTH_SHORT).show();
 
         // enable the roll die button
         rollDieButton.setEnabled(true);
@@ -124,28 +122,6 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         // update the image to blank die
         displayImage();
     }
-
-    /*
-    public void newGame() {
-        rollDieButton.setEnabled(true);
-        endTurnButton.setEnabled(true);
-        game.resetGame();
-        game.startGame();
-        pointsForTurnLabel.setText("Points For This Turn");
-        displayPlayerTurn();
-        displayPlayerPoints();
-        displayPointsForTurn();
-
-        // set the rolls to 0
-        for(int i = 0; i < currentRolls.length; i++) {
-            currentRolls[i] = 0;
-        }
-
-        // update the image to blank die
-        displayImage();
-    }
-
-     */
 
     public void gameOver() {
         rollDieButton.setEnabled(false);
@@ -321,16 +297,6 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
         scoreToWin = Integer.parseInt(prefs.getString("score_to_win", "100"));
         endTurnNumber = Integer.parseInt(prefs.getString("end_turn_number", "8"));
 
-        // make breakfast
-        String toastText;
-        toastText = "NumDie = " + numDie;
-        //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
-
-        toastText = "ScoreToWin = " + scoreToWin;
-        //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
-
-        toastText = "endTurnNumber = " + endTurnNumber;
-        //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         // update preferences in the game
         game.setNumDie(numDie);
@@ -355,8 +321,6 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        // Toast t = Toast.makeText(this, String.format(Locale.US, "%d", game.getTurnPoints()), Toast.LENGTH_LONG);
-        // t.show();
         outState.putInt(PLAYER1_SCORE, game.getPlayer1Score());
         outState.putInt(PLAYER2_SCORE, game.getPlayer2Score());
         outState.putInt(TURN_POINTS, game.getTurnPoints());
@@ -382,7 +346,7 @@ public class SecondFragment extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             case R.id.menu_about:
-                //Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "About", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected((item));
